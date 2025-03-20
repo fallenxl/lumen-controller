@@ -10,9 +10,6 @@ BROKER = "192.168.88.85"
 PORT = 1883
 APPLICATION_ID = "8f72266a-4f8d-4e5e-9229-47bd0930049d"
 TOPIC = f"application/{APPLICATION_ID}/device/+/event/up"
-USERNAME = "admin"
-PASSWORD = "admin"
-
 COMMANDS = {
     "open": "BASgFwBV",
     "closed": "BASgFwCZ"
@@ -177,7 +174,6 @@ async def websocket_handler(websocket, path):
 
 # Configurar cliente MQTT
 client = mqtt.Client()
-# client.username_pw_set(USERNAME, PASSWORD)
 client.on_connect = on_connect
 client.on_message = on_message
 
