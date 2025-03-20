@@ -1,0 +1,4 @@
+database/data.db
+.env
+node_modules
+.next
