@@ -9,7 +9,7 @@ async def main():
     loop = asyncio.get_running_loop()
     mqtt_message_queue = asyncio.Queue()
 
-    set_queue(mqtt_message_queue)  # Asegurar que la cola se usa correctamente en mqtt_client
+    set_queue(mqtt_message_queue, loop)
 
     connect_mqtt()  # Conectar al broker antes de iniciar MQTT
 

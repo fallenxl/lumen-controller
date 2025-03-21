@@ -3,15 +3,15 @@ import asyncio
 from src.config import BROKER, PORT, TOPIC
 from src.handlers import process_message
 
-mqtt_message_queue = None  # Inicialmente vacía
+mqtt_message_queue = None
+event_loop = None  
 
-# Configurar cliente MQTT
 client = mqtt.Client()
 
-def set_queue(queue):
-    """Permite que main.py pase la cola correcta"""
-    global mqtt_message_queue
+def set_queue(queue, loop):
+    global mqtt_message_queue, event_loop
     mqtt_message_queue = queue
+    event_loop = loop  
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -21,26 +21,29 @@ def on_connect(client, userdata, flags, rc):
         print(f"❌ Error de conexión: {rc}")
 
 def on_message(client, userdata, msg):
-    """Pasa el mensaje MQTT al hilo principal de asyncio."""
-    if mqtt_message_queue:
+    if mqtt_message_queue and event_loop:
         asyncio.run_coroutine_threadsafe(
-            mqtt_message_queue.put(msg.payload.decode()),
-            asyncio.get_running_loop()
+            mqtt_message_queue.put(msg.payload.decode()), event_loop
         )
 
 client.on_connect = on_connect
 client.on_message = on_message
+client.username_pw_set("admin", "admin")
 
 def connect_mqtt():
-    """Conectar al broker MQTT"""
     client.connect(BROKER, PORT, 60)
 
 async def start_mqtt():
-    """Inicia el loop MQTT en un hilo separado"""
     client.loop_start()
 
 async def process_mqtt_messages(queue):
-    """Procesa los mensajes de MQTT en la cola"""
     while True:
         message = await queue.get()
+        print(f"🔍 Procesando mensaje: {message}")
         await process_message(message)
+
+# 🔥 Mantenemos publish_message aquí, sin importarlo en websocket_server.py
+def publish_message(topic, payload):
+    """Publica un mensaje MQTT."""
+    response = client.publish(topic, payload)
+    print(f"📤 Mensaje publicado en {topic}: {payload}")

@@ -12,9 +12,14 @@ def get_database():
 def get_devices():
     db = get_database()
     cursor = db.cursor()
+    
+    cursor.execute("PRAGMA table_info(devices)")
+    columns = [column[1] for column in cursor.fetchall()]
     cursor.execute("SELECT * FROM devices")
     rows = cursor.fetchall()
     db.close()
+    
+    rows = [dict(zip(columns, row)) for row in rows]
     return jsonify({"devices": rows})
 
 @app.route("/devices", methods=["PATCH"])

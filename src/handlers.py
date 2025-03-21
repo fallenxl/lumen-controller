@@ -14,8 +14,10 @@ async def process_message(message):
         if not devEui:
             print("❌ No se encontró devEui en el mensaje")
             return
+        
+        object_data["name"] = device_info.get("deviceName")
 
-        update_device(devEui, object_data)
+        update_device(devEui, object_data, object_data.get("controlCode"))
 
         # Enviar datos a todos los clientes WebSocket conectados
         if websocket_clients:
@@ -26,3 +28,14 @@ async def process_message(message):
 
     except Exception as e:
         print(f"❌ Error procesando mensaje: {e}")
+
+
+async def process_command(devEui, command):
+    """Procesa un comando recibido a través de WebSocket."""
+    try:
+        update_device(devEui, {}, command)
+        print(f"✅ Comando {command} recibido para {devEui}")
+
+    except Exception as e:
+        print(f"❌ Error procesando comando: {e}")
+    
