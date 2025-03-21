@@ -1,2 +1,4 @@
 paho-mqtt==1.6.1
 websockets==10.3
+flask==2.0.1
+flask-cors==3.0.10
