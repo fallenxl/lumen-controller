@@ -1,17 +1,15 @@
-import { useState } from 'react'
-import './App.css'
-import { Button } from './components/ui/button'
+import ValveControlDashboard from "@/components/valve-control-dashboard"
 
-function App() {
-  const [count, setCount] = useState(0)
+import { AppHeader } from "./components/app-header";
 
+export default function App() {
   return (
-    <>
-      <Button onClick={() => setCount((count) => count + 1)}>
-        count is: {count}
-      </Button>
-    </>
+    <main className="min-h-screen">
+      <AppHeader />
+      <div className="p-4 md:p-8">
+        <ValveControlDashboard />
+      </div>
+    </main>
   )
 }
 
-export default App
