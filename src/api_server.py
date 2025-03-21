@@ -6,7 +6,7 @@ app = Flask(__name__)
 CORS(app)
 
 def get_database():
-    return sqlite3.connect("../database/data.db")
+    return sqlite3.connect("./database/data.db")
 
 @app.route("/devices", methods=["GET"])
 def get_devices():
