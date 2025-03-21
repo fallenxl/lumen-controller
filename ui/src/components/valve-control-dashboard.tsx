@@ -27,7 +27,7 @@ export default function ValveControlDashboard() {
   const [currentValve, setCurrentValve] = useState<Valve | null>(null)
 
   useEffect(() => {
-    axios.get(`http://${window.location.hostname}:5000/api/devices`).then((response) => {
+    axios.get(`http://${window.location.hostname}:5000/devices`).then((response) => {
       console.log("📦 Datos de válvulas crudos:", response.data)
       const parsedData: Valve[] = response.data.devices?.map((valve: any) => ({
         name: valve.name ?? valve.devEui,
