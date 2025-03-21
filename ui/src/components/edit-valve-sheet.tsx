@@ -72,8 +72,8 @@ export function EditValveSheet({ valve, open, onOpenChange, onSave, onDelete }: 
 
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent>
+    <Sheet open={open} onOpenChange={onOpenChange} >
+      <SheetContent className="px-6">
         <SheetHeader>
           <SheetTitle>Editar Válvula</SheetTitle>
         </SheetHeader>

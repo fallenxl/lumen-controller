@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar className="z-[9999] bg-white">
       <SidebarHeader className="border-b border-border/50">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -26,7 +26,7 @@ export function AppSidebar() {
                 <DropletIcon className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-semibold">AquaControl</span>
+                <span className="font-semibold">Lumen Controller</span>
                 <span className="text-xs text-muted-foreground">Sistema de Control</span>
               </div>
             </SidebarMenuButton>

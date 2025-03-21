@@ -7,11 +7,10 @@ import { AppSidebar } from './components/app-sidebar.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <SidebarProvider>
-
-      <SidebarInset className="bg-gradient-to-b from-sky-50 to-white">
+    <SidebarProvider className=''>
 
         <AppSidebar />
+      <SidebarInset className="bg-gradient-to-b from-sky-50 to-white ">
         <App />
       </SidebarInset>
     </SidebarProvider>
