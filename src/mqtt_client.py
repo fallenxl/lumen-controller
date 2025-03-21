@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
 import asyncio
-from src.config import BROKER, PORT, TOPIC
+from src.config import BROKER, PORT, TOPIC, USERNAME, PASSWORD
 from src.handlers import process_message
 
 mqtt_message_queue = None
@@ -28,7 +28,7 @@ def on_message(client, userdata, msg):
 
 client.on_connect = on_connect
 client.on_message = on_message
-client.username_pw_set("admin", "admin")
+client.username_pw_set(USERNAME, PASSWORD)
 
 def connect_mqtt():
     client.connect(BROKER, PORT, 60)
