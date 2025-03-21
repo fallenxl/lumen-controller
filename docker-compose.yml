@@ -6,7 +6,7 @@ services:
     ports:
       - "5000:5000"  # Flask
       - "8765:8765"  # WebSocket
-      - "3000:3000"  # Next.js
+      - "4173:4173"  # React Vite
     environment:
       - BROKER=192.168.88.85
       - PORT=1883

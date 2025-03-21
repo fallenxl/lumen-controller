@@ -29,7 +29,7 @@ WORKDIR /app
 
 # Exponer puertos que viene en las variables de entorno
 EXPOSE 1883  
-EXPOSE 3000
+EXPOSE 4173
 EXPOSE 8765
 
 # Ejecutar backend y frontend en paralelo
