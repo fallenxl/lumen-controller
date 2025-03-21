@@ -1,6 +1,6 @@
 import json
-from database import update_device
-from websocket_server import websocket_clients
+from src.database import update_device
+from src.websocket_server import websocket_clients
 import asyncio
 
 async def process_message(message):

@@ -27,7 +27,7 @@ export default function ValveControlDashboard() {
   const [currentValve, setCurrentValve] = useState<Valve | null>(null)
 
   useEffect(() => {
-    axios.get("/api/devices").then((response) => {
+    axios.get("http://localhost:5000/devices").then((response) => {
       const parsedData: Valve[] = response.data.devices?.map((valve: any) => ({
         name: valve.name ?? valve.devEui,
         status: valve.valveStatus === 'open',

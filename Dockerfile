@@ -1,27 +1,34 @@
-# Usa Python como base
-FROM python:3.10
+# Usa una imagen base de Python
+FROM python:3.9-slim
 
-# Instala Node.js y npm
-RUN apt-get update && apt-get install -y nodejs npm
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y curl python3 build-essential libsqlite3-dev
 
-# Establece el directorio de trabajo
+# Instalar Node.js y npm
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g pnpm
+
+# Configurar directorio de trabajo
 WORKDIR /app
 
-# Copia los archivos del backend
-COPY . .
-
-# Instala dependencias de Python
+# Copiar e instalar dependencias del backend
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Instala dependencias del frontend
-WORKDIR /app/ui
-RUN npm install && npm run build  # Asegúrate de que el frontend se construya
+# Copiar el código del backend
+COPY . .
 
-# Regresa al directorio raíz
+# Instalar dependencias del frontend con compilación correcta
+WORKDIR /app/ui
+RUN pnpm install --ignore-scripts && pnpm rebuild better-sqlite3 && pnpm build
+
+# Volver al directorio del backend
 WORKDIR /app
 
-# Expone los puertos (ajústalos según necesidad)
-EXPOSE 5000 3000 
+# Exponer puertos
+EXPOSE 1883  
+EXPOSE 3000  
 
-# Ejecuta frontend y backend en paralelo
-CMD ["sh", "-c", "cd app && python main.py & cd ui && npm start"]
+# Ejecutar backend y frontend en paralelo
+CMD ["sh", "-c", "python main.py & pnpm --prefix ui start --port 3000"]

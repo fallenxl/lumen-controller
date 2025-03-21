@@ -1,13 +1,17 @@
 import paho.mqtt.client as mqtt
 import asyncio
-from asyncio import Queue
-from config import BROKER, PORT, TOPIC
-from handlers import process_message
+from src.config import BROKER, PORT, TOPIC
+from src.handlers import process_message
 
-mqtt_message_queue = Queue()
+mqtt_message_queue = None  # Inicialmente vacía
 
 # Configurar cliente MQTT
 client = mqtt.Client()
+
+def set_queue(queue):
+    """Permite que main.py pase la cola correcta"""
+    global mqtt_message_queue
+    mqtt_message_queue = queue
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -18,7 +22,11 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     """Pasa el mensaje MQTT al hilo principal de asyncio."""
-    loop.call_soon_threadsafe(mqtt_message_queue.put_nowait, msg.payload.decode())
+    if mqtt_message_queue:
+        asyncio.run_coroutine_threadsafe(
+            mqtt_message_queue.put(msg.payload.decode()),
+            asyncio.get_running_loop()
+        )
 
 client.on_connect = on_connect
 client.on_message = on_message
@@ -31,8 +39,8 @@ async def start_mqtt():
     """Inicia el loop MQTT en un hilo separado"""
     client.loop_start()
 
-async def process_mqtt_messages():
+async def process_mqtt_messages(queue):
     """Procesa los mensajes de MQTT en la cola"""
     while True:
-        message = await mqtt_message_queue.get()
+        message = await queue.get()
         await process_message(message)

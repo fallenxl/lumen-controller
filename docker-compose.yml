@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8775:8775"  # WebSocket
+      - "3000:3000"  # Next.js
+    environment:
+      - BROKER=192.168.88.85
+      - PORT=1883
+      - APPLICATION_ID=8F7226Aa-6f8d-4e5e-9229-67bd09308A94
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
