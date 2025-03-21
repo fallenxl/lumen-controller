@@ -21,7 +21,11 @@ COPY . .
 
 # Instalar dependencias del frontend con compilación correcta
 WORKDIR /app/ui
-RUN pnpm install --ignore-scripts && pnpm rebuild better-sqlite3 && pnpm build
+
+# Establecer variable de entorno para evitar errores con @next/swc
+ENV NEXT_SKIP_NATIVE_SWC_BUILD=1
+
+RUN pnpm install --ignore-scripts && pnpm build
 
 # Volver al directorio del backend
 WORKDIR /app
