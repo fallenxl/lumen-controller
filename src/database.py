@@ -44,7 +44,7 @@ def update_device(devEui, data, control_code):
                 devEui,valveStatus,
                 emptyPipe, temperatureAlarm, overRange,
                 leakage, lowBattery, burst, reverseFlow, applicationId, lastUpdate, batteryLevel, totalConsumption, name
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', 'localtime'), ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', 'localtime'), ?, ?, ?)
             ON CONFLICT(devEui) DO UPDATE SET
                 valveStatus = excluded.valveStatus,
                 emptyPipe = excluded.emptyPipe,

@@ -24,8 +24,8 @@ async def websocket_handler(websocket, path):
 
 async def websocket_server():
     """Inicia el servidor WebSocket"""
-    async with websockets.serve(websocket_handler, "localhost", 8765):
-        print("🌐 WebSocket Server iniciado en ws://localhost:8765")
+    async with websockets.serve(websocket_handler, "0.0.0.0", 8765):
+        print("🌐 WebSocket Server iniciado en ws://0.0.0.0:8765")
         await asyncio.Future()  # Mantener el servidor corriendo
 
 async def update_device_valve_status(devEui, valveStatus):

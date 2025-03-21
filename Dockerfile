@@ -33,4 +33,4 @@ EXPOSE 4173
 EXPOSE 8765
 
 # Ejecutar backend y frontend en paralelo
-CMD ["sh", "-c", "python main.py & pnpm --prefix ui start -- --host"]
+CMD ["sh", "-c", "python main.py & pnpm --prefix ui start --host"]

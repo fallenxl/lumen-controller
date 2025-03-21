@@ -10,6 +10,8 @@ services:
     environment:
       - BROKER=192.168.88.85
       - PORT=1883
+      - USERNAME=admin
+      - PASSWORD=admin
       - APPLICATION_ID=8F7226Aa-6f8d-4e5e-9229-67bd09308A94
     volumes:
       - ./data:/data

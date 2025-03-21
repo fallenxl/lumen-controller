@@ -39,7 +39,7 @@ export function EditValveSheet({ valve, open, onOpenChange, onSave, onDelete }: 
 
   const handleSave = async () => {
     if (valve) {
-      const response = await axios.patch("http://localhost:5000/devices", {
+      const response = await axios.patch(`http://${window.location.hostname}:5000/devices`, {
         name: name,
         location: location,
         valveStatus: valve.status ? "open" : "closed",
@@ -57,7 +57,7 @@ export function EditValveSheet({ valve, open, onOpenChange, onSave, onDelete }: 
 
   const handleDelete = async () => {
     if (valve) {
-      const response = await axios.delete("http://localhost:5000/devices", {
+      const response = await axios.delete(`http://${window.location.hostname}:5000/devices`, {
         data: {
           devEui: valve.devEui,
         },
