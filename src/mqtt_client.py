@@ -15,7 +15,7 @@ def set_queue(queue, loop):
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
-        print("✅ Conectado a MQTT")
+        print(f"🔗 Conectado al broker MQTT {BROKER}:{PORT}")
         client.subscribe(TOPIC)
     else:
         print(f"❌ Error de conexión: {rc}")

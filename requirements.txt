@@ -3,3 +3,4 @@ websockets==10.3
 flask==3.1.0
 flask-cors==3.0.10
 werkzeug==3.1.0
+python-dotenv==1.0.1
