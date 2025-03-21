@@ -22,17 +22,15 @@ COPY . .
 # Instalar dependencias del frontend con compilación correcta
 WORKDIR /app/ui
 
-# Establecer variable de entorno para evitar errores con @next/swc
-ENV NEXT_SKIP_NATIVE_SWC_BUILD=1
-
-RUN pnpm install --ignore-scripts && pnpm build
+RUN pnpm install --ignore-scripts && pnpm build 
 
 # Volver al directorio del backend
 WORKDIR /app
 
-# Exponer puertos
+# Exponer puertos que viene en las variables de entorno
 EXPOSE 1883  
-EXPOSE 3000  
+EXPOSE 3000
+EXPOSE 8765
 
 # Ejecutar backend y frontend en paralelo
-CMD ["sh", "-c", "python main.py & pnpm --prefix ui start --port 3000"]
+CMD ["sh", "-c", "python main.py & pnpm --prefix ui start -- --host"]

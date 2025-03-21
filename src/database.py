@@ -1,5 +1,10 @@
 import sqlite3
 from src.config import APPLICATION_ID
+import os
+
+# crear carpeta database si no existe
+if not os.path.exists("./database"):
+    os.makedirs("./database")
 
 # Conectar a la base de datos SQLite
 conn = sqlite3.connect("./database/data.db", check_same_thread=False)

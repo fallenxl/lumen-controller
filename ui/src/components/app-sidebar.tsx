@@ -1,4 +1,3 @@
-"use client"
 import { DropletIcon, HomeIcon, SettingsIcon, HelpCircleIcon, LogOutIcon } from "lucide-react"
 
 import {
@@ -27,8 +26,8 @@ export function AppSidebar() {
                 <DropletIcon className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-semibold">Lumen Controller</span>
-                <span className="text-xs text-muted-foreground">v0.1.0</span>
+                <span className="font-semibold">AquaControl</span>
+                <span className="text-xs text-muted-foreground">Sistema de Control</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -74,14 +73,14 @@ export function AppSidebar() {
           <SidebarGroupLabel>Sistema</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {/* <SidebarMenuItem>
+              <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a href="#">
                     <SettingsIcon />
                     <span>Configuración</span>
                   </a>
                 </SidebarMenuButton>
-              </SidebarMenuItem> */}
+              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a href="#">

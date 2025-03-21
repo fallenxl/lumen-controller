@@ -28,6 +28,7 @@ export default function ValveControlDashboard() {
 
   useEffect(() => {
     axios.get("http://localhost:5000/devices").then((response) => {
+      console.log("📦 Datos de válvulas crudos:", response.data)
       const parsedData: Valve[] = response.data.devices?.map((valve: any) => ({
         name: valve.name ?? valve.devEui,
         status: valve.valveStatus === 'open',
@@ -47,7 +48,7 @@ export default function ValveControlDashboard() {
     let retryInterval: NodeJS.Timeout | null = null;
 
     const connectWebSocket = () => {
-      let socket = new WebSocket("ws://localhost:8775")
+      let socket = new WebSocket("ws://localhost:8765")
       setSocket(socket);
       socket.onopen = () => {
         console.log("✅ WebSocket connection established.");

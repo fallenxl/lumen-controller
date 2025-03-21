@@ -4,7 +4,8 @@ services:
   app:
     build: .
     ports:
-      - "8775:8775"  # WebSocket
+      - "5000:5000"  # Flask
+      - "8765:8765"  # WebSocket
       - "3000:3000"  # Next.js
     environment:
       - BROKER=192.168.88.85
