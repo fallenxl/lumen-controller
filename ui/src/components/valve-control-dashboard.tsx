@@ -1,112 +1,64 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ValveControlCard from "./valve-control-card"
 import { EditValveSheet } from "./edit-valve-sheet"
-import axios from "axios"
-interface Valve {
-  name: string
-  status: boolean
-  location: string
-  devEui: string
-  applicationId: string,
-  isLoading?: boolean,
-  lastUpdate?: string,
-  batteryLevel?: number,
-  totalConsumption: number
-}
+import { useWebSocket } from "@/hooks/use-websocket"
+import { IValve } from "@/interfaces"
+import {useValveStore} from '@/store/valves.store'
 
 export default function ValveControlDashboard() {
-  // Mock data for valves - in a real app, this would come from an API
-  const [valves, setValves] = useState<Valve[]>([])
-  const [socket, setSocket] = useState<WebSocket | null>(null)
-  // State for edit sheet
-  const [editSheetOpen, setEditSheetOpen] = useState(false)
-  const [currentValve, setCurrentValve] = useState<Valve | null>(null)
+  const {
+    fetchValves,
+    valves,
+    updateValveStatus,
+    setValves
 
+  } = useValveStore(state => state)
+  const [editSheetOpen, setEditSheetOpen] = useState(false)
+  const [currentValve, setCurrentValve] = useState<IValve | null>(null)
+  const { sendMessage } = useWebSocket(`ws://${window.location.hostname}:8765/`, (data) => {
+    if (data.controlCode === 129 || data.controlCode === 132) {
+      updateValveStatus(data.devEui, data.valveStatus === "open")
+    }
+  });
+
+ 
   useEffect(() => {
-    axios.get(`http://${window.location.hostname}:5000/devices`).then((response) => {
-      console.log("📦 Datos de válvulas crudos:", response.data)
-      const parsedData: Valve[] = response.data.devices?.map((valve: any) => ({
-        name: valve.name ?? valve.devEui,
-        status: valve.valveStatus === 'open',
-        location: valve.location ?? "Ubicación desconocida",
-        devEui: valve.devEui,
-        applicationId: valve.applicationId,
-        lastUpdate: valve.lastUpdate,
-        batteryLevel: valve.batteryLevel,
-        totalConsumption: valve.totalConsumption
-      }))
-      console.log("📦 Datos de válvulas cargados:", parsedData)
-      setValves(parsedData)
-    })
+   (async () => {
+      await fetchValves()
+    }
+   )()
   }, [])
 
-  useEffect(() => {
-    let retryInterval: NodeJS.Timeout | null = null;
-
-    const connectWebSocket = () => {
-      let socket = new WebSocket(`ws://${window.location.hostname}:8765`);
-
-      setSocket(socket);
-      socket.onopen = () => {
-        console.log("✅ WebSocket connection established.");
-        if (retryInterval) clearInterval(retryInterval);
-      };
-
-      socket.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          console.log("📩 Mensaje recibido:", data);
-
-          if (data.controlCode === 129 || data.controlCode === 132) {
-            setValves((valves) =>
-              valves.map((valve) =>
-                valve.devEui === data.devEui ? { ...valve, status: data.valveStatus === "open", isLoading: false } : valve
-              )
-            );
-          }
-        } catch (error) {
-          console.error("❌ Error procesando mensaje:", error);
-        }
-      };
-
-      socket.onclose = () => {
-        console.log("🔴 WebSocket connection closed. Reconnecting...");
-        retryInterval = setTimeout(connectWebSocket, 2000);
-      };
-    };
-
-    connectWebSocket();
-
-    return () => {
-      if (socket) socket.close();
-      if (retryInterval) clearTimeout(retryInterval);
-    };
-  }, []);
-
-
-
   const toggleValve = (id: string, valveStatus: boolean) => {
-    if (socket) {
-      socket.send(JSON.stringify({ devEui: id, valveStatus: valveStatus ? "closed" : "open" }));
-      setValves((valves) =>
-        valves.map((valve) => (valve.devEui === id ? { ...valve, isLoading: true } : valve))
-      );
-    }
-  }
 
-  const handleEdit = (valve: Valve) => {
+
+    const message = {
+      devEui: id,
+      valveStatus: valveStatus ? "closed" : "open",
+    };
+
+    try {
+      sendMessage(message);
+      setValves(
+        valves.map((valve) =>
+          valve.devEui === id ? { ...valve, isLoading: true, startedAt: new Date() } : valve
+        )
+      );
+
+    } catch (error) {
+      console.error("Error al enviar mensaje WebSocket:", error);
+    }
+  };
+
+  const handleEdit = (valve: IValve) => {
     setCurrentValve(valve)
     setEditSheetOpen(true)
   }
 
   const handleSaveEdit = (id: string, name: string, location: string, status: boolean) => {
     setValves(valves.map((valve) => (valve.devEui === id ? { ...valve, name, location, status } : valve)))
-    // In a real application, you would send a request to your backend here
-    console.log(`Edited valve ${id}: name=${name}, location=${location}`)
   }
 
   const handleDelete = (id: string) => {
@@ -192,6 +144,7 @@ export default function ValveControlDashboard() {
         onOpenChange={setEditSheetOpen}
         onSave={handleSaveEdit}
         onDelete={handleDelete}
+        onToggle={toggleValve}
       />
     </div>
   )

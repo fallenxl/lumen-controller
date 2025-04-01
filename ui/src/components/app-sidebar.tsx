@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export function AppSidebar() {
   return (
-    <Sidebar className="z-[9999] bg-white">
+    <Sidebar className=" bg-white">
       <SidebarHeader className="border-b border-border/50">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -50,7 +50,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
+{/* 
         <SidebarGroup>
           <SidebarGroupLabel>Zonas</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -67,9 +67,9 @@ export function AppSidebar() {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup> */}
 
-        <SidebarGroup>
+        {/* <SidebarGroup>
           <SidebarGroupLabel>Sistema</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -91,7 +91,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup> */}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-border/50">

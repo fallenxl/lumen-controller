@@ -1,14 +1,70 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_jwt_extended import (
+    JWTManager, create_access_token, jwt_required, get_jwt_identity
+)
 import sqlite3
+import bcrypt
+import datetime
 
 app = Flask(__name__)
 CORS(app)
 
-def get_database():
-    return sqlite3.connect("./database/data.db")
+# Configuración de JWT
+app.config["JWT_SECRET_KEY"] = "supersecretkey"  # Cambia esto en producción
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=1)
+jwt = JWTManager(app)
 
+def get_database():
+    return sqlite3.connect("./database/data.db", check_same_thread=False)
+
+# Ruta para registrar usuarios
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.get_json()
+    db = get_database()
+    cursor = db.cursor()
+
+    # Verificar si el usuario ya existe
+    cursor.execute("SELECT id FROM users WHERE username = ?", (data["username"],))
+    if cursor.fetchone():
+        db.close()
+        return jsonify({"error": "El usuario ya existe"}), 400
+
+    # Hashear la contraseña
+    hashed_password = bcrypt.hashpw(data["password"].encode("utf-8"), bcrypt.gensalt())
+
+    # Insertar el usuario en la base de datos
+    cursor.execute(
+        "INSERT INTO users (username, password, name, email) VALUES (?, ?, ?, ?)",
+        (data["username"], hashed_password.decode("utf-8"), data["name"], data["email"]),
+    )
+    db.commit()
+    db.close()
+
+    return jsonify({"message": "Usuario registrado exitosamente"}), 201
+
+# Ruta para iniciar sesión
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    db = get_database()
+    cursor = db.cursor()
+
+    cursor.execute("SELECT id, password FROM users WHERE username = ?", (data["username"],))
+    user = cursor.fetchone()
+    db.close()
+
+    if not user or not bcrypt.checkpw(data["password"].encode("utf-8"), user[1].encode("utf-8")):
+        return jsonify({"error": "Credenciales inválidas"}), 401
+
+    # Crear el token de acceso
+    access_token = create_access_token(identity=data["username"])
+    return jsonify({"access_token": access_token}), 200
+
+# Ruta protegida para obtener dispositivos
 @app.route("/devices", methods=["GET"])
+@jwt_required()
 def get_devices():
     db = get_database()
     cursor = db.cursor()
@@ -22,7 +78,9 @@ def get_devices():
     rows = [dict(zip(columns, row)) for row in rows]
     return jsonify({"devices": rows})
 
+# Ruta protegida para actualizar un dispositivo
 @app.route("/devices", methods=["PATCH"])
+@jwt_required()
 def update_device():
     data = request.get_json()
     db = get_database()
@@ -33,7 +91,9 @@ def update_device():
     db.close()
     return jsonify({"success": True})
 
+# Ruta protegida para eliminar un dispositivo
 @app.route("/devices", methods=["DELETE"])
+@jwt_required()
 def delete_device():
     data = request.get_json()
     db = get_database()

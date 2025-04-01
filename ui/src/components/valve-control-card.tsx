@@ -30,13 +30,23 @@ export default function ValveControlCard({ valve, onToggle, onEdit }: ValveContr
     >
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
-          <CardTitle className="text-lg font-medium">{valve.name}</CardTitle>
           <div className="flex items-center gap-2">
-            {valve.batteryLevel && (
+           
+            <CardTitle className="text-lg font-medium">{valve.name}</CardTitle>
+          </div>
+          <div className="flex items-center gap-2">
+        
+          {valve.batteryLevel && (
               <Badge variant="default" className="bg-neutral-100 text-neutral-600 text-xs">
                 {parseInt(valve.batteryLevel.toString())}%
               </Badge>
             )}
+              <Badge
+            variant="default"
+            className={`text-xs ${new Date().getTime() - new Date(valve.lastUpdate || '').getTime() > 86400000 ? "bg-red-500 text-white" : "bg-green-500 text-white"}`}
+          >
+            {new Date().getTime() - new Date(valve.lastUpdate || '').getTime() > 86400000 ? "Offline" : "Online"}
+          </Badge>
             <Badge
               variant={valve.status ? "default" : "outline"}
               className={valve.status ? "bg-sky-500 hover:bg-sky-600" : ""}

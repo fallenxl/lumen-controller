@@ -10,6 +10,8 @@ PORT = int(os.environ.get("PORT"))
 USERNAME = os.environ.get("USERNAME")
 PASSWORD = os.environ.get("PASSWORD")
 
+WS_PORT = os.environ.get("WS_PORT", 8765)
+
 APPLICATION_ID = os.environ.get("APPLICATION_ID")
 
 TOPIC = f"application/{APPLICATION_ID}/device/+/event/up"

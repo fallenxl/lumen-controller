@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt
 import asyncio
 from src.config import BROKER, PORT, TOPIC, USERNAME, PASSWORD
 from src.handlers import process_message
-
+from datetime import datetime
 mqtt_message_queue = None
 event_loop = None  
 
@@ -15,7 +15,7 @@ def set_queue(queue, loop):
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
-        print(f"🔗 Conectado al broker MQTT {BROKER}:{PORT}")
+        print_log(f"conectado al broker MQTT {BROKER}:{PORT}")
         client.subscribe(TOPIC)
     else:
         print(f"❌ Error de conexión: {rc}")
@@ -39,11 +39,13 @@ async def start_mqtt():
 async def process_mqtt_messages(queue):
     while True:
         message = await queue.get()
-        print(f"🔍 Procesando mensaje: {message}")
         await process_message(message)
 
 # 🔥 Mantenemos publish_message aquí, sin importarlo en websocket_server.py
 def publish_message(topic, payload):
-    """Publica un mensaje MQTT."""
-    response = client.publish(topic, payload)
-    print(f"📤 Mensaje publicado en {topic}: {payload}")
+    client.publish(topic, payload)
+    print_log(f"mensaje publicado en {topic}")
+    
+
+def print_log(message):
+    print(f"[{datetime.now().strftime('%H:%M:%S')}][mqtt] {message}")

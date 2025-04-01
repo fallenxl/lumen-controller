@@ -2,6 +2,7 @@ import json
 from src.database import update_device
 from src.websocket_server import websocket_clients
 import asyncio
+from datetime import datetime
 
 async def process_message(message):
     """Procesa un mensaje MQTT recibido."""
@@ -12,7 +13,7 @@ async def process_message(message):
         devEui = device_info.get("devEui")
 
         if not devEui:
-            print("❌ No se encontró devEui en el mensaje")
+            print_log(f"devEui no encontrado en el mensaje: {message}")
             return
         
         object_data["name"] = device_info.get("deviceName")
@@ -24,18 +25,19 @@ async def process_message(message):
             message_json = json.dumps({"devEui": devEui, **object_data})
             await asyncio.gather(*(client.send(message_json) for client in websocket_clients))
 
-        print(f"✅ Datos de {devEui} guardados/actualizados en SQLite")
+        print_log(f"Datos de {devEui} guardados/actualizados en SQLite")
 
     except Exception as e:
-        print(f"❌ Error procesando mensaje: {e}")
+        print_log(f"Error procesando mensaje: {e}")
 
 
 async def process_command(devEui, command):
     """Procesa un comando recibido a través de WebSocket."""
     try:
         update_device(devEui, {}, command)
-        print(f"✅ Comando {command} recibido para {devEui}")
-
     except Exception as e:
-        print(f"❌ Error procesando comando: {e}")
+        print_log(f"Error procesando comando: {e}")
     
+
+def print_log(message):
+    print(f"[{datetime.now().strftime('%H:%M:%S')}][mqtt] {message}")

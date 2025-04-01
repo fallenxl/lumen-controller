@@ -1,6 +1,7 @@
-import ValveControlDashboard from "@/components/valve-control-dashboard"
+// import ValveControlDashboard from "@/components/valve-control-dashboard"
 
 import { AppHeader } from "./components/app-header";
+import ValveControlDashboard from "./components/valve-control-dashboard";
 
 export default function App() {
   return (
@@ -8,6 +9,7 @@ export default function App() {
       <AppHeader />
       <div className="p-4 md:p-8">
         <ValveControlDashboard />
+        {/* <TestWs /> */}
       </div>
     </main>
   )
