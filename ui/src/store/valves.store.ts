@@ -16,7 +16,12 @@ export const useValveStore = create<ValvesStore>((set, get) => ({
   fetchValves: async () => {
     let valvesPending = JSON.parse(sessionStorage.getItem('valvesPending') || '[]');
     try {
-      const response = await axios.get(`http://${window.location.hostname}:5000/devices`);
+      const response = await axios.get(`http://${window.location.hostname}:5000/devices`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+        },
+      });
       const parsedData: IValve[] = response.data.devices?.map((valve: any) => ({
         name: valve.name ?? valve.devEui,
         status: valve.valveStatus === 'open',

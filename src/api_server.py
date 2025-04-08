@@ -6,12 +6,13 @@ from flask_jwt_extended import (
 import sqlite3
 import bcrypt
 import datetime
+from src.config import JWT_SECRET
 
 app = Flask(__name__)
 CORS(app)
 
 # Configuración de JWT
-app.config["JWT_SECRET_KEY"] = "supersecretkey"  # Cambia esto en producción
+app.config["JWT_SECRET_KEY"] = JWT_SECRET  # Cambia esto en producción
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=1)
 jwt = JWTManager(app)
 
@@ -50,17 +51,24 @@ def login():
     data = request.get_json()
     db = get_database()
     cursor = db.cursor()
-
     cursor.execute("SELECT id, password FROM users WHERE username = ?", (data["username"],))
     user = cursor.fetchone()
     db.close()
-
     if not user or not bcrypt.checkpw(data["password"].encode("utf-8"), user[1].encode("utf-8")):
         return jsonify({"error": "Credenciales inválidas"}), 401
 
     # Crear el token de acceso
     access_token = create_access_token(identity=data["username"])
     return jsonify({"access_token": access_token}), 200
+
+
+# refresh token
+@app.route("/refresh", methods=["POST"])
+@jwt_required()
+def refresh():
+    current_user = get_jwt_identity()
+    access_token = create_access_token(identity=current_user)
+    return jsonify(access_token=access_token), 200
 
 # Ruta protegida para obtener dispositivos
 @app.route("/devices", methods=["GET"])
@@ -104,5 +112,4 @@ def delete_device():
     return jsonify({"success": True})
 
 def start_flask():
-    """Inicia el servidor Flask en modo no bloqueante."""
     app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)

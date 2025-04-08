@@ -1,7 +1,8 @@
 // import ValveControlDashboard from "@/components/valve-control-dashboard"
 
-import { AppHeader } from "./components/app-header";
-import ValveControlDashboard from "./components/valve-control-dashboard";
+import { AppHeader } from "@/components/app-header";
+import ValveControlDashboard from "@/components/valve-control-dashboard";
+
 
 export default function App() {
   return (
