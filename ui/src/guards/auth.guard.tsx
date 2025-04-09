@@ -1,3 +1,4 @@
+import { Loader } from "@/components/loader";
 import { useAuthStore } from "@/store";
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router";
@@ -20,13 +21,15 @@ const ProtectedRoute = () => {
     } else {
       // Si no hay token, redirigir al login
       localStorage.removeItem("jwt");
+      setIsAuthenticated(false);
     }
 
   }, []);
 
+
   if (isAuthenticated === null) {
     // Mostrar un loader o algo mientras se verifica la autenticación
-    return <div>Loading...</div>;
+    return <Loader />;
   }
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };

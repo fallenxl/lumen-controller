@@ -123,3 +123,14 @@
 .bg-sidebar {
   background-color: white;
 }
+
+
+.loader {
+  width: 60px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 8px solid;
+  border-color: #09c6ff #0000;
+  animation: l1 1s infinite;
+}
+@keyframes l1 {to{transform: rotate(.5turn)}}

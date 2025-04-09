@@ -42,7 +42,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       return null;
     }
   },
-  logout: () => set({ isAuthenticated: false }),
+  logout: () => {
+    set({ isAuthenticated: false });
+    localStorage.removeItem("jwt");
+    window.location.href = "/login";
+  },
   refreshToken: async ({token}) => {
     try {
       const response = await axios.post(`http://${window.location.hostname}:5000/refresh`, {}, {

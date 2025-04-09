@@ -1,4 +1,4 @@
-import { DropletIcon, HomeIcon, SettingsIcon, HelpCircleIcon, LogOutIcon } from "lucide-react"
+import { DropletIcon, HomeIcon, LogOutIcon } from "lucide-react"
 
 import {
   Sidebar,
@@ -14,8 +14,11 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useAuthStore } from "@/store"
+
 
 export function AppSidebar() {
+  const { logout } = useAuthStore()
   return (
     <Sidebar className=" bg-white">
       <SidebarHeader className="border-b border-border/50">
@@ -50,7 +53,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-{/* 
+        {/* 
         <SidebarGroup>
           <SidebarGroupLabel>Zonas</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -96,13 +99,15 @@ export function AppSidebar() {
 
       <SidebarFooter className="border-t border-border/50">
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton>
+          <SidebarMenuItem className="flex items-center justify-between pl-5">
+            <div className="w-full flex items-center gap-2">
               <Avatar className="h-6 w-6">
                 <AvatarImage src="/placeholder.svg?height=32&width=32" />
                 <AvatarFallback>AD</AvatarFallback>
               </Avatar>
               <span>Admin</span>
+            </div>
+            <SidebarMenuButton className="w-auto cursor-pointer" size="sm" onClick={logout}>
               <LogOutIcon className="ml-auto h-4 w-4" />
             </SidebarMenuButton>
           </SidebarMenuItem>
