@@ -23,7 +23,7 @@ async def websocket_handler(websocket):
 
 async def websocket_server():
     """Inicia el servidor WebSocket"""
-    async with serve(websocket_handler, "localhost", WS_PORT, ping_interval=20, ping_timeout=20) as server:
+    async with serve(websocket_handler, "0.0.0.0", WS_PORT, ping_interval=20, ping_timeout=20) as server:
         print_log(f"Servidor WebSocket iniciado en ws://localhost:{WS_PORT}")
         await server.serve_forever()
         await asyncio.Future()  # Mantener el servidor en ejecución
