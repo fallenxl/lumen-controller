@@ -33,20 +33,25 @@ export function LoginForm({
     })
     if (response) {
       localStorage.setItem("jwt", response.access_token)
-      navigate("/", {replace: true})
+      navigate("/", { replace: true })
     } else {
       // Handle failed login
       alert("Login failed")
     }
-  }  
+  }
   return (
     <div className={cn("flex flex-col gap-6  ", className)} {...props}>
-      <Card className="border-0 bg-white shadow-none md:shadow-md md:border">
-        <CardHeader>
-          <CardTitle>Bienvenido</CardTitle>
-          <CardDescription>
-            Inicie sesión para acceder al sistema de control de válvulas.
-          </CardDescription>
+      <Card className="border-0 bg-white shadow-none md:shadow-md md:border w-full max-w-screen-sm">
+        <CardHeader  >
+          <div className="flex flex-col items-center justify-center mb-4">
+            <img src="/lumen.png" alt="Logo" className="w-48 mb-5" />
+
+            <CardTitle className="text-2xl">Bienvenido</CardTitle>
+            <CardDescription className="mt-2">
+              Inicie sesión para acceder al sistema de control de válvulas.
+            </CardDescription>
+          </div>
+
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -66,19 +71,15 @@ export function LoginForm({
                   <Label htmlFor="password">Contraseña</Label>
                 </div>
                 <Input
-                onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
-                value={credentials.password}
-                id="password" type="password" placeholder="****************" required />
+                  onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+                  value={credentials.password}
+                  id="password" type="password" placeholder="****************" required />
               </div>
             </div>
             <Button type="submit" className="w-full mt-6">
               Iniciar sesión
             </Button>
-            <div className="flex items-center justify-between mt-4">
-              <p className="text-sm text-muted-foreground text-center">
-                Lumen Controller es un software para el control de válvulas.
-              </p>
-            </div>
+      
           </form>
         </CardContent>
       </Card>

@@ -89,7 +89,7 @@ export default function ValveControlDashboard() {
       </Card>
       <Tabs defaultValue="all" className="mb-8">
         <TabsList>
-          <TabsTrigger value="all">Todas las Válvulas</TabsTrigger>
+          <TabsTrigger  value="all">Todas las Válvulas</TabsTrigger>
           <TabsTrigger value="active">Abiertas</TabsTrigger>
           <TabsTrigger value="inactive">Cerradas</TabsTrigger>
         </TabsList>

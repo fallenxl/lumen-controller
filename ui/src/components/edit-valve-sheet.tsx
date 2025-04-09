@@ -47,6 +47,11 @@ export function EditValveSheet({ valve, open, onOpenChange, onSave, onDelete, on
         location: location,
         valveStatus: valve.status ? "open" : "closed",
         devEui: valve.devEui,
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
       })
 
       if (response.status === 200) {
@@ -64,7 +69,12 @@ export function EditValveSheet({ valve, open, onOpenChange, onSave, onDelete, on
         data: {
           devEui: valve.devEui,
         },
-      })
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      }
+    )
 
       if (response.status === 200) {
         onOpenChange(false)
