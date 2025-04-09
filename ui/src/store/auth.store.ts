@@ -21,7 +21,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   login: async ({ username, password }) => {
     try {
-      const response = await axios.post(`http://localhost:5000/login`, {
+      const response = await axios.post(`http://${window.location.hostname}:5000/login`, {
         username,
         password,
       });
