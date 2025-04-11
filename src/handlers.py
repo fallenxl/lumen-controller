@@ -18,11 +18,12 @@ async def process_message(message):
         
         object_data["name"] = device_info.get("deviceName")
 
-        update_device(devEui, object_data, object_data.get("controlCode"))
+        updated_ts = update_device(devEui, object_data, object_data.get("controlCode"))
 
         # Enviar datos a todos los clientes WebSocket conectados
         if websocket_clients:
-            message_json = json.dumps({"devEui": devEui, **object_data})
+            
+            message_json = json.dumps({"devEui": devEui, "lastUpdate": updated_ts, **object_data})
             await asyncio.gather(*(client.send(message_json) for client in websocket_clients))
 
         print_log(f"Datos de {devEui} guardados/actualizados en SQLite")

@@ -6,7 +6,7 @@ import axios from 'axios';
 interface ValvesStore {
   valves: IValve[];
   fetchValves: () => Promise<void>;
-  updateValveStatus: (id: string, status: boolean) => void;
+  updateValveStatus: (id: string, status: boolean, lastUpdate:string) => void;
   setValves: (valves: IValve[]) => void;
 }
 
@@ -35,20 +35,23 @@ export const useValveStore = create<ValvesStore>((set, get) => ({
         startedAt: valvesPending.find((v: IValvesPending) => v.devEui === valve.devEui)?.startedAt ?? null,
       }));
 
-      set({ valves: parsedData});
+      set({ valves: parsedData });
 
     } catch (error) {
       console.error('Error fetching valves:', error);
     }
   },
 
-  updateValveStatus: (id, status) => {
-    set((state) => ({
-      valves: state.valves.map((valve) =>
-        valve.devEui === id ? { ...valve, status, isLoading: false, startedAt: null } : valve
-      ),
-    }));
-    get();
+  updateValveStatus: (id, status, lastUpdate) => {
+
+      set((state) => ({
+        valves: state.valves.map((valve) =>
+          valve.devEui === id ? { ...valve, status, isLoading: false, startedAt: null, lastUpdate} : valve
+        ),
+      }));
+      get();
+  
+
   },
 
 

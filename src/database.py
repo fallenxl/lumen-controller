@@ -2,6 +2,7 @@ import sqlite3
 from src.config import APPLICATION_ID
 import os
 import bcrypt
+from datetime import datetime
 # crear carpeta database si no existe
 if not os.path.exists("./database"):
     os.makedirs("./database")
@@ -54,15 +55,17 @@ conn.commit()
 
 
 def update_device(devEui, data, control_code):
+    # TIMESTAMP IN MS
+    CURRENT_TIMESTAMP = int(datetime.now().timestamp() * 1000)
     if control_code == 129:
         # Insertar o actualizar el último telemetry por dispositivo
         cursor.execute(
-            """
+            f"""
             INSERT INTO devices (
                 devEui,valveStatus,
                 emptyPipe, temperatureAlarm, overRange,
                 leakage, lowBattery, burst, reverseFlow, applicationId, lastUpdate, batteryLevel, totalConsumption, name
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', 'localtime'), ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,{CURRENT_TIMESTAMP} , ?, ?, ?)
             ON CONFLICT(devEui) DO UPDATE SET
                 valveStatus = excluded.valveStatus,
                 emptyPipe = excluded.emptyPipe,
@@ -73,7 +76,7 @@ def update_device(devEui, data, control_code):
                 burst = excluded.burst,
                 reverseFlow = excluded.reverseFlow,
                 applicationId = excluded.applicationId,
-                lastUpdate = datetime('now', 'localtime'),
+                lastUpdate = {CURRENT_TIMESTAMP},
                 batteryLevel = excluded.batteryLevel,
                 totalConsumption = excluded.totalConsumption,
                 name = excluded.name
@@ -97,17 +100,18 @@ def update_device(devEui, data, control_code):
     elif control_code == 132:
         # Insertar o actualizar el último telemetry por dispositivo
         cursor.execute(
-            """
+            f"""
             INSERT INTO devices (
                 devEui,valveStatus,lastUpdate
-            ) VALUES (?, ? , CURRENT_TIMESTAMP)
+            ) VALUES (?, ? , {CURRENT_TIMESTAMP})
             ON CONFLICT(devEui) DO UPDATE SET
                 valveStatus = excluded.valveStatus,
-                lastUpdate = CURRENT_TIMESTAMP
+                lastUpdate = {CURRENT_TIMESTAMP}
             """,
             (devEui, data.get("valveStatus")),
         )
     conn.commit()
+    return CURRENT_TIMESTAMP
 
 def create_default_admin():
     # Verificar si hay al menos un usuario en la tabla

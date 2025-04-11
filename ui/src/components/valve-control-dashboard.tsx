@@ -19,7 +19,7 @@ export default function ValveControlDashboard() {
   const [currentValve, setCurrentValve] = useState<IValve | null>(null)
   const { sendMessage } = useWebSocket(`ws://${window.location.hostname}:8765/`, (data) => {
     if (data.controlCode === 129 || data.controlCode === 132) {
-      updateValveStatus(data.devEui, data.valveStatus === "open")
+      updateValveStatus(data.devEui, data.valveStatus === "open", data.lastUpdate)
     }
   });
 
@@ -32,7 +32,6 @@ export default function ValveControlDashboard() {
   }, [])
 
   const toggleValve = (id: string, valveStatus: boolean) => {
-
 
     const message = {
       devEui: id,

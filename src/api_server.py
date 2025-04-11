@@ -86,6 +86,23 @@ def get_devices():
     rows = [dict(zip(columns, row)) for row in rows]
     return jsonify({"devices": rows})
 
+# Get device by id -> string
+@app.route("/devices/<string:devEui>", methods=["GET"])
+@jwt_required()
+def get_device_by_id(devEui):
+    db = get_database()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM devices WHERE devEui = ?", (devEui,))
+    device = cursor.fetchone()
+    db.close()
+
+    if device:
+        columns = [column[0] for column in cursor.description]
+        return jsonify(dict(zip(columns, device)))
+    else:
+        return jsonify({"error": "Dispositivo no encontrado"}), 404
+    
+
 # Ruta protegida para actualizar un dispositivo
 @app.route("/devices", methods=["PATCH"])
 @jwt_required()
@@ -98,6 +115,7 @@ def update_device():
     db.commit()
     db.close()
     return jsonify({"success": True})
+
 
 # Ruta protegida para eliminar un dispositivo
 @app.route("/devices", methods=["DELETE"])

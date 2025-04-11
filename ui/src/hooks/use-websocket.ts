@@ -11,14 +11,12 @@ export const useWebSocket = (url: string, onMessage: (data: any) => void) => {
             socketRef.current = new WebSocket(url);
 
             socketRef.current.onopen = () => {
-                console.log("WebSocket conectado");
                 if (retryIntervalRef.current) clearTimeout(retryIntervalRef.current);
             };
 
             socketRef.current.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    console.log("Mensaje recibido:", data);
                     onMessage(data);
                 } catch (error) {
                     console.error("Error parsing message:", error);
