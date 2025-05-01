@@ -3,17 +3,17 @@ version: '3'
 services:
   app:
     build: .
-    network_mode: host
+    # network_mode: host
     ports:
       - "5000:5000"  # Flask
       - "8765:8765"  # WebSocket
       - "4173:4173"  # React Vite
     environment:
-      - BROKER=192.168.88.85
+      - BROKER=192.168.88.228
       - PORT=1883
       - USERNAME=admin
       - PASSWORD=admin
-      - APPLICATION_ID=8F7226Aa-6f8d-4e5e-9229-67bd09308A94
+      - APPLICATION_ID=da361409-e975-4d8d-80cf-e049887d276a
     volumes:
       - ./data:/data
     restart: unless-stopped

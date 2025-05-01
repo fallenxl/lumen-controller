@@ -6,7 +6,7 @@ from flask_jwt_extended import (
 import sqlite3
 import bcrypt
 import datetime
-from src.config import JWT_SECRET
+from src.config import JWT_SECRET, DB_CONNECTION
 
 app = Flask(__name__)
 CORS(app)
@@ -17,7 +17,7 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=1)
 jwt = JWTManager(app)
 
 def get_database():
-    return sqlite3.connect("./database/data.db", check_same_thread=False)
+    return sqlite3.connect(DB_CONNECTION, check_same_thread=False)
 
 # Ruta para registrar usuarios
 @app.route("/register", methods=["POST"])

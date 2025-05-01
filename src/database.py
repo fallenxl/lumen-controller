@@ -1,14 +1,14 @@
 import sqlite3
-from src.config import APPLICATION_ID
+from src.config import APPLICATION_ID, ENVIRONMENT, DB_CONNECTION
 import os
 import bcrypt
 from datetime import datetime
 # crear carpeta database si no existe
-if not os.path.exists("./database"):
-    os.makedirs("./database")
+if ENVIRONMENT == "development" and not os.path.exists("./data"):
+    os.makedirs("./data")
 
 # Conectar a la base de datos SQLite
-conn = sqlite3.connect("./database/data.db", check_same_thread=False)
+conn = sqlite3.connect(DB_CONNECTION, check_same_thread=False)
 cursor = conn.cursor()
 
 # Crear la tabla si no existe
